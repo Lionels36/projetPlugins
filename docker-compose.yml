@@ -1,0 +1,51 @@
+version: '3.3'
+
+# mkdir projet_copy_a_wp  (avoir le fichier docker-compose.yml au même niveau que ce dossier)
+# mkdir projet_copy_a_wp/data_db (dans projet_copy_a_wp donc)
+# docker compose up -d
+
+services:
+    maria_db:
+        image: mariadb:latest # 
+        volumes:
+          - ./data_db:/var/lib/mariadb # 
+        environment:
+            MYSQL_ROOT_PASSWORD: admin_digital2021 # 
+            MYSQL_DATABASE: proj_copy_wp_db # 
+            MYSQL_USER: Jul1 # 
+            MYSQL_PASSWORD: digital2021 # 
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.9 # 
+        links:
+          - maria_db # 
+        environment:
+          VIRTUAL_HOST: projetwp.real
+          PMA_HOST: maria_db
+          PMA_PORT: 3306
+        ports:
+          - '9000:80' # 
+
+    wordpress:
+        image: wordpress:latest # 
+        depends_on:
+            - maria_db # 
+        ports:
+            - 8080:80 # 
+        environment:
+            VIRTUAL_HOST: projetwp.real
+            WORDPRESS_DB_HOST: maria_db:3306
+            WORDPRESS_DB_USER: Jul1 # 
+            WORDPRESS_DB_PASSWORD: digital2021 # 
+            WORDPRESS_DB_NAME: proj_copy_wp_db # 
+            WORDPRESS_TABLE_PREFIX: pcwp_db_ # 
+        working_dir: /var/www/html # 
+        volumes:
+          - .:/var/www/html/ # 
+        sysctls:
+         # 
+          - net.ipv4.ip_unprivileged_port_start=0
+        #        
+        user: "${UID:-1001}:${UID:-1001}"
+volumes:
+    data_db:
