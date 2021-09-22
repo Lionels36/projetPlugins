@@ -150,3 +150,37 @@ function wpm_add_taxonomies() {
 	);
     register_taxonomy( 'genres', 'jeuxvideos', $args_genre );
 }
+/* ajouter champ "Extrait" dans les page WP */
+function ajouter_extrait_pages() {
+	add_post_type_support( 'page', 'excerpt' );
+}
+add_action( 'init', 'ajouter_extrait_pages' );
+
+//--------------------------------SHORTCODE-------------------------------------------
+//Fonction appelée au sortcode
+function cptID($atts){
+	extract($atts);
+	if (isset($id)) {
+
+		//$post devient le post à l'id n°atts
+		$post = get_post($id);
+
+		//On affiche les valeurs du post
+		echo $post->post_title;
+		echo $post->post_content;
+	}
+}
+//Fonction qui enregistre le shortcode
+add_shortcode('jeuid', 'cptID');
+
+
+
+function shortcode_gallery(){
+    return "<h2>Bienvenue chez karac !</h2>";
+}
+add_shortcode('bienvenue', 'shortcode_bienvenue');
+
+/*function shortcode_bienvenue(){
+    return "<h2>Bienvenue chez karac !</h2>";
+}
+add_shortcode('bienvenue', 'shortcode_bienvenue');*/
