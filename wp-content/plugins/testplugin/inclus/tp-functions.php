@@ -157,7 +157,7 @@ function ajouter_extrait_pages() {
 add_action( 'init', 'ajouter_extrait_pages' );
 
 //--------------------------------SHORTCODE-------------------------------------------
-//Fonction appelée au sortcode
+//Fonction appelée au shortcode
 function cptID($atts){
 	extract($atts);
 	if (isset($id)) {
@@ -175,10 +175,82 @@ add_shortcode('jeuid', 'cptID');
 
 
 
-function shortcode_gallery(){
-    return "<h2>Bienvenue chez karac !</h2>";
+
+
+
+
+/*function tax($atts){
+	$atts = shortcode_atts( array(
+		'default' => ''
+	  ), $atts );
+	
+		$terms = get_terms('genres');
+       
+
+	    wp_reset_query();
+		$args = array('post_type' => 'jeuxvideos',
+		
+		  'tax_query' => array(
+			array(
+			  'taxonomy' => 'genres',
+			  'field' => 'slug',
+			  'terms' => $atts,
+			),
+		  ),
+		 );
+		 var_dump ($args);
+		 
+		 $loop = new WP_Query($args);
+		 if($loop->have_posts()) {
+			while($loop->have_posts()) : $loop->the_post();
+				echo ' "'.get_the_title().'" ';
+			endwhile;
+		 }
+	
+	}
+
+	
+add_shortcode('tax', 'tax');*/
+
+//Prend 2 paramètres : $tax et $id 
+//Exemple : [findTax tax=nomTaxonomie id=sousNomTaxonomie]
+function tax($atts){
+	//Récuperation des paramètres du shortcode $id et $tax
+	extract($atts);
+
+	//Récuperation de la taxonomie (Genres, auteurs ou consoles)
+	$custom_terms = get_terms($tax);
+
+
+	foreach($custom_terms as $custom_term) {
+    wp_reset_query();
+    $args = array('post_type' => 'jeuxvideos', //<= Post type = votre CPT !!!
+        'tax_query' => array(
+            array(
+                'taxonomy' => $tax, //<= Votre nom de taxonomie!!!
+                'field' => 'slug',
+                'terms' => $custom_term->slug,
+            ),
+        ),
+     );
+
+	 //Loop pour parcourir les posts
+     $loop = new WP_Query($args);
+
+	 //<= Votre sous-nom de taxonomie (ici $id) pour n'afficher que la bonne
+     if(($loop->have_posts()) && ($id == $custom_term->name)) { 
+        echo '<h2>'.$custom_term->name.'</h2>';
+
+        while($loop->have_posts()) : $loop->the_post();
+            echo '<a href="'.get_permalink().'">'.get_the_title().'</a>';
+        endwhile;
+     }
+	}
 }
-add_shortcode('bienvenue', 'shortcode_bienvenue');
+
+	
+add_shortcode('findTax', 'tax');
+
 
 /*function shortcode_bienvenue(){
     return "<h2>Bienvenue chez karac !</h2>";
