@@ -24,10 +24,10 @@ while ( have_posts() ) :
 
 
 	//---------------------------------AFFICHAGE CUSTOM FIELDS---------------------------------
-	echo "Version : " . get_post_meta($post->ID, 'version', true);
-	echo "<br/>Age : " . get_post_meta($post->ID, 'age', true);
-	echo "<br/>Date : " . get_post_meta($post->ID, 'date', true);
-	echo "<br/>Players : " . get_post_meta($post->ID, 'players', true);
+	echo "Version : " . get_post_meta($post->ID, 'Version', true);
+	echo "<br/>Age : " . get_post_meta($post->ID, 'Age', true);
+	echo "<br/>Date : " . get_post_meta($post->ID, 'Date', true);
+	echo "<br/>Players : " . get_post_meta($post->ID, 'Players', true);
 
 
 

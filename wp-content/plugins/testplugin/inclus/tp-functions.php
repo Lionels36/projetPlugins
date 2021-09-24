@@ -156,6 +156,9 @@ function ajouter_extrait_pages() {
 }
 add_action( 'init', 'ajouter_extrait_pages' );
 
+
+
+
 //--------------------------------SHORTCODE-------------------------------------------
 //Fonction appelée au shortcode
 function cptID($atts){
@@ -172,45 +175,6 @@ function cptID($atts){
 }
 //Fonction qui enregistre le shortcode
 add_shortcode('jeuid', 'cptID');
-
-
-
-
-
-
-
-/*function tax($atts){
-	$atts = shortcode_atts( array(
-		'default' => ''
-	  ), $atts );
-	
-		$terms = get_terms('genres');
-       
-
-	    wp_reset_query();
-		$args = array('post_type' => 'jeuxvideos',
-		
-		  'tax_query' => array(
-			array(
-			  'taxonomy' => 'genres',
-			  'field' => 'slug',
-			  'terms' => $atts,
-			),
-		  ),
-		 );
-		 var_dump ($args);
-		 
-		 $loop = new WP_Query($args);
-		 if($loop->have_posts()) {
-			while($loop->have_posts()) : $loop->the_post();
-				echo ' "'.get_the_title().'" ';
-			endwhile;
-		 }
-	
-	}
-
-	
-add_shortcode('tax', 'tax');*/
 
 //Prend 2 paramètres : $tax et $id 
 //Exemple : [findTax tax=nomTaxonomie id=sousNomTaxonomie]
@@ -242,7 +206,7 @@ function tax($atts){
         echo '<h2>'.$custom_term->name.'</h2>';
 
         while($loop->have_posts()) : $loop->the_post();
-            echo '<a href="'.get_permalink().'">'.get_the_title().'</a>';
+            echo '<a href="'.get_permalink().'">'.get_the_title().'</a><br/>';
         endwhile;
      }
 	}
@@ -252,7 +216,63 @@ function tax($atts){
 add_shortcode('findTax', 'tax');
 
 
-/*function shortcode_bienvenue(){
-    return "<h2>Bienvenue chez karac !</h2>";
+// afficher les 3 derniers posts
+/*function my_recent_post(){
+	$recentPosts = new WP_Query();
+    $recentPosts->query('showposts=3');
+
+ while ($recentPosts->have_posts()) : $recentPosts->the_post(); 
+    echo '<a href="'the_permalink() " rel="bookmark">'get_the_image(). '</a>';
+ endwhile; */
+
+
+
+
+
+
+   
+function ShowThree(){
+
+	//Compte si c'est la première image pour la mettre plus grande
+	$count = 0;
+
+	//Conditions d'affichge des post
+	$next_args = array(
+		'post_type' => 'jeuxvideos', //Type de post : jeuxvideos
+		'post_status' => 'publish',
+		'posts_per_page'=>3,		//3 posts
+		'order'=>'DESC',			//Ordre inversé (Pour afficher les 3 derniers posts)
+		'orderby'=>'ID'
+		);
+
+	//On fait la query avec les paramètres $next arg (tableau au dessus)
+	$the_query = new WP_Query( $next_args );
+	//$the_query->the_post();
+	if ( $the_query->have_posts() ) : 
+    	while ( $the_query->have_posts() ) : $the_query->the_post(); //On récupère le post
+
+			//Afficher le titre
+			echo get_the_title() . "<br/>";
+			//Afficher le contenu
+			echo get_the_content() . "<br/>";
+
+			//Afficher l'image
+			if ($count == 0) { //Si count = 0, c'est le dernier post à afficher avec une plus grande image
+				echo the_post_thumbnail(array(500,500)) . "<br/><br/><br/>";
+				$count++;	   //Incrémenter count pour ne plus afficher de grande image
+			
+			
+			} else {           //Sinon afficher petite image
+				echo the_post_thumbnail(array(250,250)) . "<br/><br/><br/>";
+			}
+			
+			
+		endwhile;
+	endif;
+	//reset post data
+	wp_reset_postdata(); 
+
 }
-add_shortcode('bienvenue', 'shortcode_bienvenue');*/
+
+
+add_shortcode('trois', 'showThree');
