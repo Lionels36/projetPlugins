@@ -30,29 +30,6 @@ while ( have_posts() ) :
 	echo "<br/>Players : " . get_post_meta($post->ID, 'Players', true);
 
 
-
-
-
-
-
-
-	$my_book_title = get_post_meta( get_the_ID(), 'book_title', true);
-	$my_book_isbn = get_post_meta( get_the_ID(), 'book_isbn', true);
- 
-	if( ! empty( $my_book_title ) ) {
-		echo '<h3>Book Title: ' . $my_book_title . '<h3>';
-		echo '<p>ISBN: ' . $my_book_isbn . '</p>';
-	}
-	if ( is_attachment() ) {
-		// Parent post navigation.
-		the_post_navigation(
-			array(
-				/* translators: %s: Parent post link. */
-				'prev_text' => sprintf( __( '<span class="meta-nav">Published in</span><span class="post-title">%s</span>', 'twentytwentyone' ), '%title' ),
-			)
-		);
-	}
-
 	// If comments are open or there is at least one comment, load up the comment template.
 	if ( comments_open() || get_comments_number() ) {
 		comments_template();
